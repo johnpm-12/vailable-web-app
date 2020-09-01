@@ -258,54 +258,58 @@ function CalendarPage({ data, setData }) {
                   onClick={async () => {
                     let url = `https://vailable.github.io${location.pathname}${location.search}`;
                     try {
-                      const resp = await fetch(
-                        `https://tinyurl.com/api-create.php?url=${encodeURIComponent(
-                          url
-                        )}`
-                      );
-                      const newUrl = await resp.text();
-                      if (newUrl.startsWith("https://tinyurl.com/")) {
-                        url = newUrl;
-                      }
-                    } catch (e) {
-                      // console.error(e);
-                    }
-                    try {
+                      // const resp = await fetch(
+                      //   `https://tinyurl.com/api-create.php?url=${encodeURIComponent(
+                      //     url
+                      //   )}`
+                      // );
+                      // const newUrl = await resp.text();
+                      // if (newUrl.startsWith("https://tinyurl.com/")) {
+                      //   url = newUrl;
+                      // }
                       if (window.navigator.share) {
-                        window.navigator.share({
-                          // title: data.n || "Vailable",
-                          text: `${
-                            data.n ? `${data.n} - ` : ""
-                          }Vailable - Easy Calendar Sharing App`,
-                          url,
-                        });
+                        window.navigator
+                          .share({
+                            // title: data.n || "Vailable",
+                            text: `${
+                              data.n ? `${data.n} - ` : ""
+                            }Vailable - Easy Calendar Sharing App`,
+                            url,
+                          })
+                          .catch((e) => {
+                            setCopiedSnackbarMessage(
+                              "Error #1 sharing automatically. Copy the URL of the current page to share your calendar"
+                            );
+                            setCopiedSnackbarOpen(true);
+                          });
+                        return;
+                      } else if (window.navigator.clipboard) {
+                        window.navigator.clipboard
+                          .writeText(url)
+                          .then(() => {
+                            setCopiedSnackbarMessage(defaultCopiedMessage);
+                            setCopiedSnackbarOpen(true);
+                          })
+                          .catch((e) => {
+                            // TODO: pop up a modal with the link and directions to copy and send to someone to share
+                            setCopiedSnackbarMessage(
+                              "Error #2 sharing automatically. Copy the URL of the current page to share your calendar"
+                            );
+                            setCopiedSnackbarOpen(true);
+                          });
                         return;
                       }
+                      setCopiedSnackbarMessage(
+                        "Error #3 sharing automatically. Copy the URL of the current page to share your calendar"
+                      );
+                      setCopiedSnackbarOpen(true);
                     } catch (e) {
                       // console.error(e);
-                      // setCopiedSnackbarMessage(`Error: ${e}`);
-                      // setCopiedSnackbarOpen(true);
+                      setCopiedSnackbarMessage(
+                        "Error #4 sharing automatically. Copy the URL of the current page to share your calendar"
+                      );
+                      setCopiedSnackbarOpen(true);
                     }
-                    if (window.navigator.clipboard) {
-                      window.navigator.clipboard
-                        .writeText(url)
-                        .then(() => {
-                          setCopiedSnackbarMessage(defaultCopiedMessage);
-                          setCopiedSnackbarOpen(true);
-                        })
-                        .catch((e) => {
-                          // TODO: pop up a modal with the link and directions to copy and send to someone to share
-                          setCopiedSnackbarMessage(
-                            "Error sharing automatically. Copy the URL of the current page to share your calendar"
-                          );
-                          setCopiedSnackbarOpen(true);
-                        });
-                      return;
-                    }
-                    setCopiedSnackbarMessage(
-                      "Error sharing automatically. Copy the URL of the current page to share your calendar"
-                    );
-                    setCopiedSnackbarOpen(true);
                   }}
                 >
                   Share Changes
