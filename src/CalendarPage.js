@@ -199,17 +199,29 @@ function CalendarPage({ data, setData }) {
               xs={12}
               container
               direction="row"
+              justify="flex-start"
+              alignItems="center"
+              spacing={1}
+              // wrap="nowrap"
+            >
+              <Grid item>
+                <Typography noWrap>
+                  Directions: Double tap on the calendar to add an event
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              container
+              direction="row"
               justify="center"
               alignItems="center"
               spacing={1}
               // wrap="nowrap"
             >
               <Grid item>
-                <Button
-                  size="large"
-                  variant="outlined"
-                  onClick={() => setTitleDialogOpen(true)}
-                >
+                <Button size="large" onClick={() => setTitleDialogOpen(true)}>
                   {data.n || "Unnamed Calendar"}
                 </Button>
               </Grid>
